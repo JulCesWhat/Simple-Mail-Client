@@ -4,6 +4,8 @@
 from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
+# Import Tk standard dialogs
+from tkinter import filedialog
 
 from email.message import Message
 import smtplib
@@ -39,6 +41,8 @@ class ComposeForm(Toplevel):
         super().__init__()
         self.title("Compose Message")
 
+        self.attachments = []
+
         self._sender_email = sender_email
         self._smtp_host = smtp_host
 
@@ -51,9 +55,12 @@ class ComposeForm(Toplevel):
                              underline=0, command=self._send)
         self._bclose = Button(btns, text="Close",
                               underline=0, command=self._close)
+        self._battachment = Button(btns, text="Attachemt",
+                              underline=0, command=self._addAttachemt)
 
         self._bsend.pack(side=LEFT, padx=3, pady=3)
         self._bclose.pack(side=LEFT, padx=3, pady=3)
+        self._battachment.pack(side=RIGHT, padx=3, pady=3)
 
 
         # Middle panel of interface, containing header entry fields
@@ -94,14 +101,6 @@ class ComposeForm(Toplevel):
         to_addr = self._to_var.get().strip()
         if not to_addr:
             messagebox.showerror(title="Uh-oh", message="You must provide a 'To' email address!")
-            return
-
-
-        print(self._sender_email)
-        print(to_addr)
-        print(formatdate(localtime=True))
-        print(self._subject_var.get())   
-        print(self._text.get('1.0', END))   
 
         msg = MIMEMultipart()
         msg['From'] = self._sender_email
@@ -116,13 +115,22 @@ class ComposeForm(Toplevel):
         #msg.add_header("Subject", self._subject_var.get())
         #msg.set_payload(self._text.get('1.0', END))
 
+
+        for f in self.attachments:
+        	part = MIMEBase('application', "octet-stream")
+        	part.set_payload(open(f,"rb").read())
+        	encode_base64(part)
+        	part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(f))
+        	msg.attach(part)
+
         mta = None
         try:
         	#POP3_SSL(self.server,  995)
-            mta = smtplib.SMTP(self._smtp_host)
-            mta.sendmail("self._sender_email", [to_addr], msg.as_string())
+            mta = smtplib.SMTP("smtp.bju.edu")
+            mta.sendmail(self._sender_email + '@bju.edu', [to_addr], msg.as_string())
             mta.close()
-            self.close()
+            self.destroy()
+
         except SMTPException as ex:
             messagebox.showerror(title="Uh-oh", message="Something went wrong: " + str(ex))
         #else:
@@ -135,6 +143,12 @@ class ComposeForm(Toplevel):
     def _close(self):
         # Hope they wanted to do that...
         self.destroy()
+
+    def _addAttachemt(self):
+    	file = filedialog.askopenfilename()
+    	if file:
+    		self.attachments.append(file)
+
 def main(sender=""):
     import getpass
     print(sender)

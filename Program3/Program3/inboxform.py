@@ -62,13 +62,13 @@ class WordTable(Frame):
         date = message.date
         smg = message.text
 
-        if not date.replace(" ", "") in self.dicOfMsg:
-            self._items.append(date.replace(" ", ""))
-            self.dicOfMsg[str(self.position)] = message
+        if not (date.replace(" ", "") + subject.replace(" ", "")) in self.dicOfMsg:
+            self._items.append(date.replace(" ", "") + subject.replace(" ", ""))
+            self.dicOfMsg[date.replace(" ", "") + subject.replace(" ", "")] = message
 
             self._tv.insert('',     # No parent (top-level item in "tree")
             END,                # Insert at END of list
-            str(self.position),               # Use the word itself as the item ID
+            date.replace(" ", "") + subject.replace(" ", ""),               # Use the word itself as the item ID
             text="NO",          # Display the word itself in column #0
             values=(sender, subject, date, self.position)) # Put the part of speech and count in the other columns
             self.position += 1
@@ -283,7 +283,7 @@ class MadlibApp:
         """Run the application to termination."""
         self._root.mainloop()
 
-    
+
 
 
 
