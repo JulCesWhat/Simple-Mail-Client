@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+
+# -*- coding: utf-8 -*-
+# Filename: composeform.py
+# Project: CpS 320 Program 3 - PyMail
+# Author: Julio Cesar Whatley
+# Date Last Modified: April 30 2016
+# Description: Implements the event handlers of the ComposeForm.
+#   The ComposeForm allows the user to compose and send new messages and
+#   reply to messages in his mailbox.
+
 """Program 3: Mail composition window
 """
 from tkinter import *
@@ -108,13 +118,6 @@ class ComposeForm(Toplevel):
         msg['Date'] = formatdate(localtime=True)
         msg['Subject'] = self._subject_var.get()
         msg.attach(MIMEText(self._text.get('1.0', END)))
-  
-        #msg = Message()
-        #msg.add_header("From", self._sender_email)
-        #msg.add_header("To", to_addr)
-        #msg.add_header("Subject", self._subject_var.get())
-        #msg.set_payload(self._text.get('1.0', END))
-
 
         for f in self.attachments:
         	part = MIMEBase('application', "octet-stream")
@@ -133,12 +136,6 @@ class ComposeForm(Toplevel):
 
         except SMTPException as ex:
             messagebox.showerror(title="Uh-oh", message="Something went wrong: " + str(ex))
-        #else:
-            # Done, so close self...
-            #self._close()
-        #finally:
-            #if mta:
-                #mta.quit()
 
     def _close(self):
         # Hope they wanted to do that...

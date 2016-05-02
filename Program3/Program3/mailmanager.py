@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 # Filename: mailmanager.py
 # Project: CpS 320 Program 3 - PyMail
 # Author: Julio Cesar Whatley
@@ -49,6 +50,7 @@ class MailManager():
         Slot documentation goes here.
         """
 
+        sleep(1) # artificial delay
         if self.isConnected():
             return MailManager.ALREADY_CONNECTED
         
@@ -68,8 +70,9 @@ class MailManager():
         try:
             self.pop.user(self.userid)
             self.pop.pass_(self.passwd)
-        except error_proto:
-            self.disconnect()
+        except Exception as ex:
+            self.pop = None
+            #self.disconnect()
             return MailManager.CONNECT_SUCCESS_LOGIN_FAILED
         
         # return successfully

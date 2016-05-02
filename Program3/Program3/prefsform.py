@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+
+# Filename: prefsform.py
+# Project: CpS 320 Program 3 - PyMail
+# Author: Julio Cesar Whatley
+# Date Last Modified: April 30 2016
+# Description: Implements the event handlers of the PrefsForm.
+#   The PrefsForm allows the user to specify his POP mail server and his credentials.
 """GUI Example 3: Fun with the "grid" layout manager.
 
 Also demonstrates Tk Fonts and "Variables" for data binding.
@@ -60,14 +67,11 @@ class PrefsForm(Toplevel):
         connectResult = self.mailManager.connect()
 
         if connectResult == MailManager.CONNECT_LOGIN_SUCCESS:
-            print("Success")
             self.mailManager.disconnect()
             self.top.destroy()
 
         elif connectResult == MailManager.CONNECT_SUCCESS_LOGIN_FAILED:
-            self.mailManager.disconnect()
             messagebox.showinfo("Login failed", "Server rejected specified credentials.")
 
         elif connectResult == MailManager.CONNECT_FAILED:
-            self.mailManager.disconnect()
             messagebox.showinfo("Connect failed", "Unable to connect to specified mail server.")
